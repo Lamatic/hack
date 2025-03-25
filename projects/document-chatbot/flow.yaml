@@ -1,0 +1,97 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: chatTriggerNode
+  nodeName: Chat Widget
+  values:
+    chat: ''
+    domains:
+      - https://*.*
+nodes:
+  - nodeId: extractFromFileNode_959
+    nodeType: extractFromFileNode
+    nodeName: Extract from File
+    values:
+      trim: false
+      ltrim: false
+      quote: '"'
+      rtrim: false
+      format: pdf
+      comment: 'null'
+      fileUrl: https://www.nielit.gov.in/sites/default/files/ccc_syllabus_0.pdf
+      headers: true
+      maxRows: '0'
+      encoding: utf8
+      password: ''
+      skipRows: '0'
+      delimiter: ','
+      joinPages: true
+      ignoreEmpty: false
+      returnRawText: false
+      encodeAsBase64: false
+      discardUnmappedColumns: false
+    needs:
+      - triggerNode_1
+  - nodeId: codeNode_443
+    nodeType: codeNode
+    nodeName: Text Extraction
+    values:
+      code: |-
+        const output = {{ extractFromFileNode_959.output.files }}[0]["data"][0]
+
+        return output
+    needs:
+      - extractFromFileNode_959
+  - nodeId: LLMNode_298
+    nodeType: LLMNode
+    nodeName: Generate Text
+    values:
+      tools: []
+      prompts:
+        - id: 9cd25ecf-58ad-45b0-8ca3-4412bd0f0f54
+          role: user
+          content: |-
+            QUESTION : {{triggerNode_1.output.chatMessage}}
+
+            CONTEXT : {{codeNode_443.output}}
+        - id: 187c2f4b-c23d-4545-abef-73dc897d6b7b
+          role: system
+          content: >-
+            You are a document chatbot, who is suppose to answer the questions
+            asked in chat given the context documents. Make sure you give
+            answers based only on the documents you are given.
+      memories: '[]'
+      messages: '[]'
+      generativeModelName:
+        type: generator/text
+        model_name: gemini/gemini-1.5-flash-8b-exp-0924
+        credentialId: da16733f-83ef-4ec6-af08-2289d48af69e
+        provider_name: gemini
+        credential_name: DHRUV_GEMINI_API_KEY
+    needs:
+      - codeNode_443
+  - nodeId: sticky-note-793
+    nodeType: stickyNoteNode
+    nodeName: Sticky Note
+    values:
+      text: >-
+        # This flow allows for a chatbot widget to be integrated in your local
+        application, which allows for answering questions based on given
+        documents/media.
+      color: purple
+      nodeId: stickyNoteNode
+      nodeType: stickyNoteNode
+    needs: []
+    position:
+      x: 262.4254848785547
+      'y': 0.38631993294313816
+    measured:
+      width: 305
+      height: 186
+responseNode:
+  nodeId: responseNode_triggerNode_1
+  nodeType: chatResponseNode
+  nodeName: Chat Response
+  values:
+    content: '{{LLMNode_298.output.generatedResponse}}'
+  needs:
+    - LLMNode_298

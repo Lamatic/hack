@@ -2,22 +2,42 @@
 
 A RESTful API service that generates text using Large Language Models (LLM).
 
-## Nodes
-- API Request Node
-- Text LLM Node
+## Overview
+This project implements a text generation API that can:
+- Generate human-like text responses
+- Process natural language prompts
+- Leverage advanced LLM capabilities for high-quality text generation
 
-## Getting Started
+## Structure
+The API is built using the following Lamatic Studio nodes:
+- **API Request Node**: Handles incoming HTTP requests
+- **Text LLM Node**: Powers the text generation using LLM models
 
-### Prerequisites
-- Access to [Lamatic Studio](https://studio.lamatic.ai)
-- Valid LLM model credentials
+## Prerequisites
+Before getting started, ensure you have:
+- An active account on [Lamatic Studio](https://studio.lamatic.ai)
+- API credentials for your chosen LLM provider
+- Basic understanding of REST APIs
 
-### Setup Instructions
-1. Navigate to [Lamatic Studio](https://studio.lamatic.ai) and create a new Flow
-2. Copy the provided YAML configuration into the Flow's config section
-3. Configure the Text LLM node by selecting your preferred LLM model
-4. Save your Flow configuration
-5. Test the API endpoint to verify the setup
+## Setup Guide
+1. Log in to [Lamatic Studio](https://studio.lamatic.ai)
+2. Create a new Flow project
+3. Import the provided YAML configuration
+4. Configure the Text LLM node by selecting your preferred LLM model
+5. Save and deploy your configuration
+6. Test the endpoint to ensure everything works correctly
 
 ## Usage
-Once configured, the API will be ready to accept requests for text generation using your selected LLM model.
+After deployment, your API will be ready to:
+- Accept text generation requests through the configured endpoint
+- Process prompts automatically
+- Generate high-quality text responses
+- Handle various text generation use cases
+
+## API Integration
+The service exposes a REST API endpoint that accepts requests for:
+- Text generation
+- Prompt processing
+- Response customization
+
+For detailed documentation, check out the [docs](https://docs.lamatic.ai/)
