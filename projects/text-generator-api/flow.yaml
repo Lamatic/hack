@@ -1,0 +1,46 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: graphqlNode
+  nodeName: API Request
+  values:
+    responeType: realtime
+    advance_schema: |-
+      {
+        "topic": "string"
+      }
+nodes:
+  - nodeId: LLMNode_532
+    nodeType: LLMNode
+    nodeName: Text LLM
+    values:
+      tools: []
+      prompts:
+        - id: c913ef85-4886-4918-855c-926c2b35bb3a
+          role: system
+          content: Tell me something about {{triggerNode_1.output}}
+      memories: '[]'
+      messages: '[]'
+      generativeModelName:
+        type: generator/text
+        params:
+          seed: 42
+          max_tokens: 1100
+          temperature: 0.8
+        model_name: o3-mini-2025-01-31
+        connectionId: 5b789d21-b8d8-453e-92a7-f9dbddae632a
+        credentialId: 152fa259-7de1-41f0-8d50-f8db3f6ee1f4
+        provider_name: openai
+        credential_name: OpenAI Testing 2
+    needs:
+      - triggerNode_1
+responseNode:
+  nodeId: responseNode_triggerNode_1
+  nodeType: graphqlResponseNode
+  nodeName: API Response
+  values:
+    outputMapping: |-
+      {
+        "output": "{{LLMNode_532.output.generatedResponse}}"
+      }
+  needs:
+    - LLMNode_532
