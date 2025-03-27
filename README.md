@@ -98,7 +98,7 @@ To officially submit your hackathon project:
 2. Create a new folder inside `projects/` with your project name  
    Example: `projects/my-cool-flow/`
 3. Inside your folder, include:
-   - `flow.yaml` – your exported Lamatic flow Config
+   - `flow.yaml` – your exported Lamatic flow Config ([Follow this doc to export the yaml](https://lamatic.ai/docs/flows))
    - `README.md` – explain what it does, how to run it, what makes it unique
    - Any other relevant code/scripts/assets
 4. Push your changes and open a **Pull Request** to the main repo
@@ -107,6 +107,7 @@ To officially submit your hackathon project:
    - Tag `submission` and relevant event tags (e.g., `hackathon-2025`)
 
 ---
+
 
 Let’s build something awesome 🚀  
 Need help? Ask in [Lamatic Slack](https://lamatic.ai/docs/slack) #hack or tag us in your PR!

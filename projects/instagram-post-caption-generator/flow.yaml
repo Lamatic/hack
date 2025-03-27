@@ -1,0 +1,83 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: graphqlNode
+  nodeName: Caption SS Trigger
+  values:
+    responeType: realtime
+    advance_schema: |-
+      {
+        "url": "string",
+        "tone": "string"
+      }
+nodes:
+  - nodeId: multiModalLLMNode_435
+    nodeType: multiModalLLMNode
+    nodeName: Multi Modal
+    values:
+      prompts:
+        - id: 41089773-9b1e-4ce1-8815-002c9803a9ff
+          role: system
+          content: >-
+            You are a Photographer who captions photographs for your instagram
+            account. Make sure the caption is as per the tone given by the user
+            and apt for instagram, given the image.
+        - id: 14f56d66-0953-4516-a3e7-6070f6826414
+          role: user
+          content: >-
+            You are a photo editor. Your job is to produce a concise,
+            descriptive and compelling caption that helps someone understand
+            what is in this attached photo without viewing it and in the given
+            tone. Please adhere to the following elements to produce the best
+            possible caption:
+
+
+            1. It should not exceed 200 characters. You can try to make it
+            atleast a 100 characters if the image calls for it
+
+            2. Try to make sure it fits the tone as given by the user
+
+            3. Should use some hastags if called for or seems apt
+
+
+            IMAGE URL : {{triggerNode_1.output.url}}
+
+
+            TONE : {{triggerNode_1.output.tone}}
+      messages: '[]'
+      attachments: '{{triggerNode_1.output.url}}'
+      generativeModelName:
+        type: generator/text
+        nodeId: multiModalLLMNode
+        model_name: gpt-4-turbo
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+    needs:
+      - triggerNode_1
+  - nodeId: sticky-note-223
+    nodeType: stickyNoteNode
+    nodeName: Sticky Note
+    values:
+      text: >-
+        This flow allows you to caption your instagram images based on the tone
+        you prefer using multi modal LLMs.
+      color: yellow
+      nodeId: stickyNoteNode
+      nodeType: stickyNoteNode
+    needs: []
+    position:
+      x: 246.1171617575261
+      'y': 4.4231940448351565
+    measured:
+      width: 220
+      height: 200
+responseNode:
+  nodeId: graphqlResponseNode_185
+  nodeType: graphqlResponseNode
+  values:
+    outputMapping: |-
+      {
+        "caption": "{{multiModalLLMNode_435.output.generatedResponse}}"
+      }
+  needs:
+    - multiModalLLMNode_435
