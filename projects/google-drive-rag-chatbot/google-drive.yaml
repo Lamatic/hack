@@ -1,0 +1,105 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: googleDriveNode
+  nodeName: Google Drive
+  values:
+    process: batch
+    syncMode: full_refresh_append
+    folderUrl: https://drive.google.com/drive/folders/1yx94hf1pZEseg9w3oHZcNQFBUGYOFAQ1
+    credentials: Google Drive OAuth
+    cronExpression: 0 0 */3 ? * * UTC
+nodes:
+  - nodeId: chunkNode_262
+    nodeType: chunkNode
+    nodeName: chunking
+    values:
+      chunkField: '{{triggerNode_1.output.content}}'
+      numOfChars: 200
+      separators:
+        - \n\n
+        - \n
+        - ' '
+      chunkingType: recursiveCharacterTextSplitter
+      overlapChars: '20'
+    needs:
+      - triggerNode_1
+  - nodeId: codeNode_234
+    nodeType: codeNode
+    nodeName: Extract Chunked Text
+    values:
+      code: |-
+        let docs =  {{chunkNode_262.output.chunks}};
+
+        let outputDocs = docs.map(doc => doc.pageContent);
+
+        output = outputDocs;
+    needs:
+      - chunkNode_262
+  - nodeId: vectorizeNode_448
+    nodeType: vectorizeNode
+    nodeName: Get Vectors
+    values:
+      inputText: '{{codeNode_234.output}}'
+      embeddingModelName:
+        type: embedder/text
+        model_name: text-embedding-3-small
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+      generativeModelName:
+        type: embedder/text
+        nodeId: vectorizeNode
+        model_name: text-embedding-ada-002
+        provider_name: openai
+    needs:
+      - codeNode_234
+  - nodeId: codeNode_540
+    nodeType: codeNode
+    nodeName: Transform Metadata
+    values:
+      code: >-
+        let vectors = {{vectorizeNode_448.output.vectors}};
+
+        let metadataProps = [];
+
+        let texts = {{codeNode_234.output}};
+
+
+        for (const idx in vectors) {
+            let metadata = {}
+            metadata["content"] = texts[idx];
+            metadata["file_name"] = {{triggerNode_1.output.document_key}};
+            metadataProps.push(metadata)
+        }
+
+        console.log("finaldata:", {"metadata": metadataProps, "vectors":
+        vectors});
+
+        output = {"metadata": metadataProps, "vectors": vectors}
+    needs:
+      - vectorizeNode_448
+  - nodeId: IndexNode_543
+    nodeType: IndexNode
+    nodeName: Index to DB
+    values:
+      vectorDB: GoogleDriveDocs
+      webhookURL: https://webhook.site/685a66e7-b4d3-40a4-9801-99e3460414f9
+      primaryKeys:
+        - file_name
+      vectorsField: '{{codeNode_540.output.vectors}}'
+      metadataField: '{{codeNode_540.output.metadata}}'
+      duplicateOperation: overwrite
+      embeddingModelName: {}
+      generativeModelName:
+        type: embedder/text
+        nodeId: IndexNode
+        model_name: text-embedding-ada-002
+        provider_name: openai
+    needs:
+      - codeNode_540
+  - nodeId: addNode_372
+    nodeType: addNode
+    nodeName: ''
+    values: {}
+    needs:
+      - IndexNode_543

@@ -1,0 +1,49 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: chatTriggerNode
+  nodeName: Chat Widget
+  values:
+    chat: ''
+    domains:
+      - https://*.*
+nodes:
+  - nodeId: RAGNode_106
+    nodeType: RAGNode
+    nodeName: RAG
+    values:
+      limit: 5
+      filters: ''
+      prompts:
+        - id: 187c2f4b-c23d-4545-abef-73dc897d6b7b
+          role: system
+          content: >-
+            You are suppose to answer the given query by the user, given the
+            relevant context. Remember, you have to just straight away give the
+            answer and only reference it based on the context you are given.
+      memories: '[]'
+      messages: '[]'
+      vectorDB: GoogleDriveDocs
+      certainty: '0.5'
+      queryField: '{{triggerNode_1.output.chatMessage}}'
+      embeddingModelName:
+        type: embedder/text
+        model_name: text-embedding-3-small
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+      generativeModelName:
+        type: generator/text
+        model_name: gpt-4o-mini-2024-07-18
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+    needs:
+      - triggerNode_1
+responseNode:
+  nodeId: responseNode_triggerNode_1
+  nodeType: chatResponseNode
+  nodeName: Chat Response
+  values:
+    content: '{{RAGNode_106.output.modelResponse}}'
+  needs:
+    - RAGNode_106
