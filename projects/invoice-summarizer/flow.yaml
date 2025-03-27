@@ -1,0 +1,88 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: graphqlNode
+  nodeName: API Request
+  values:
+    responeType: realtime
+    advance_schema: |-
+      {
+        "url": "string"
+      }
+nodes:
+  - nodeId: extractFromFileNode_764
+    nodeType: extractFromFileNode
+    nodeName: Extract from File
+    values:
+      trim: false
+      ltrim: false
+      quote: '"'
+      rtrim: false
+      format: pdf
+      comment: 'null'
+      fileUrl: '{{triggerNode_1.output.url}}'
+      headers: true
+      maxRows: '0'
+      encoding: utf8
+      password: ''
+      skipRows: '0'
+      delimiter: ','
+      joinPages: true
+      ignoreEmpty: false
+      returnRawText: false
+      encodeAsBase64: false
+      discardUnmappedColumns: false
+    needs:
+      - triggerNode_1
+  - nodeId: LLMNode_748
+    nodeType: LLMNode
+    nodeName: Generate Text
+    values:
+      tools: []
+      prompts:
+        - id: 187c2f4b-c23d-4545-abef-73dc897d6b7b
+          role: system
+          content: >-
+            Extract structured JSON data from this invoice data from a pdf.
+
+
+            Instructions:
+
+
+            1. Convert the provided invoice PDF into a structured JSON format.
+
+            2. Ensure the JSON output captures all relevant details, including
+            company, customer, metadata, services, totals, payment, and
+            transaction details. These are just examples, you can make the
+            relevant keys and their respective values
+
+            3. Include validation warnings if there are missing or inconsistent
+            details.
+
+            4. Do not return any output except the JSON.
+
+            5. No leading statements or backticks with json written, just give
+            the JSON object directly as it will be processed later.
+
+
+            Input : {{extractFromFileNode_764.output.files}}
+      memories: '[]'
+      messages: '[]'
+      generativeModelName:
+        type: generator/text
+        model_name: gpt-4-turbo
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+    needs:
+      - extractFromFileNode_764
+responseNode:
+  nodeId: responseNode_triggerNode_1
+  nodeType: graphqlResponseNode
+  nodeName: API Response
+  values:
+    outputMapping: |-
+      {
+        "output": "{{LLMNode_748.output.generatedResponse}}"
+      }
+  needs:
+    - LLMNode_748
