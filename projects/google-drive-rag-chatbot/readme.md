@@ -59,4 +59,4 @@ To get started, you'll need:
 - Generative Model: gpt-4-mini-2024-07-18
 - System Prompt: Configured for direct, context-based responses
 
-For comprehensive guidance, visit our [documentation](https://docs.lamatic.ai/)
+For comprehensive guidance, visit our [documentation](https://lamatic.ai/docs)

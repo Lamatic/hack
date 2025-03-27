@@ -42,4 +42,4 @@ The chatbot exposes a REST API endpoint that accepts requests for:
 - Question answering
 - Conversation management
 
-For detailed check out the [docs](https://docs.lamatic.ai/)
+For detailed check out the [docs](https://lamatic.ai/docs)

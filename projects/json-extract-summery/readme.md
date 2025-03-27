@@ -46,4 +46,4 @@ Access our versatile GraphQL API endpoint for:
 - Real-time text responses
 - Efficient data handling
 
-For comprehensive guidance, visit our [documentation](https://docs.lamatic.ai/)
+For comprehensive guidance, visit our [documentation](https://lamatic.ai/docs)
