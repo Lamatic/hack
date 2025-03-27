@@ -1,0 +1,94 @@
+triggerNode:
+  nodeId: triggerNode_1
+  nodeType: graphqlNode
+  nodeName: API Request
+  values:
+    responeType: realtime
+    advance_schema: |-
+      {
+        "query": "string",
+        "id": "int"
+      }
+nodes:
+  - nodeId: memoryNode_726
+    nodeType: memoryNode
+    nodeName: Memory Add
+    values:
+      uniqueId: '{{triggerNode_1.output.id}}'
+      sessionId: ''
+      memoryValue:
+        - role: user
+          content: '{{triggerNode_1.output.query}}'
+      memoryCollection: test
+      embeddingModelName:
+        type: embedder/text
+        model_name: text-embedding-3-small
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+      generativeModelName:
+        type: generator/text
+        model_name: gpt-4o-mini-2024-07-18
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+    needs:
+      - triggerNode_1
+  - nodeId: LLMNode_265
+    nodeType: LLMNode
+    nodeName: Text LLM
+    values:
+      tools: []
+      memories: '[]'
+      messages: '[]'
+      generativeModelName:
+        type: generator/text
+        model_name: gemini/gemini-1.5-flash-8b-exp-0924
+        credentialId: ee77c3a4-1113-42a3-b433-6923d6c4319c
+        provider_name: gemini
+        credential_name: DHRUV_GEMINI_AI_KEY
+      prompts:
+        - id: 6c5a4480-0afa-4e37-a62f-d81632c8bec5
+          role: system
+          content: >-
+            You are an expert receipe generator, who works at the gym and
+            generates
+
+            one receipe based on the previously extracted facts and their
+            current query.
+        - id: 0da5173e-ad45-4233-901e-af467d6e8f60
+          role: user
+          content: |-
+            CURRENT QUERY : {{triggerNode_1.output.query}}
+            FACTS : {{memoryNode_726.output.extractedFacts}}
+    needs:
+      - memoryRetrieveNode_963
+  - nodeId: memoryRetrieveNode_963
+    nodeType: memoryRetrieveNode
+    nodeName: Memory Retrieve
+    values:
+      limit: 10
+      filters: '[]'
+      searchQuery: >-
+        What are the user preferences and what all have they told about their
+        needs?
+      memoryCollection: test
+      embeddingModelName:
+        type: embedder/text
+        model_name: text-embedding-3-small
+        credentialId: f6930a0d-9947-472c-b64b-2244a131cad0
+        provider_name: openai
+        credential_name: DHRUV_OPEN_AI_KEY
+    needs:
+      - memoryNode_726
+responseNode:
+  nodeId: responseNode_triggerNode_1
+  nodeType: graphqlResponseNode
+  nodeName: API Response
+  values:
+    outputMapping: |-
+      {
+        "query": "{{LLMNode_265.output.generatedResponse}}"
+      }
+  needs:
+    - LLMNode_265
