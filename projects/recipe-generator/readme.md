@@ -48,4 +48,4 @@ Access our versatile GraphQL API endpoint for:
 - Context-aware responses
 - Real-time recipe suggestions
 
-For comprehensive guidance, visit our [documentation](https://docs.lamatic.ai/)
+For comprehensive guidance, visit our [documentation](https://lamatic.ai/docs)

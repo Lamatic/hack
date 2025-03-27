@@ -40,4 +40,4 @@ Access our versatile REST API endpoint for:
 - Intelligent prompt handling
 - Customizable output formatting
 
-For comprehensive guidance, visit our [documentation](https://docs.lamatic.ai/)
+For comprehensive guidance, visit our [documentation](https://lamatic.ai/docs)

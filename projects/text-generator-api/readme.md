@@ -40,4 +40,4 @@ The service exposes a REST API endpoint that accepts requests for:
 - Prompt processing
 - Response customization
 
-For detailed documentation, check out the [docs](https://docs.lamatic.ai/)
+For detailed documentation, check out the [docs](https://lamatic.ai/docs)
